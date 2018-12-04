@@ -13,6 +13,12 @@
 </ion-header>
 
 
-<ion-content padding>
-  <h1>Esta es la página de inicio, aquí situaresmo un mapa con un botón de añadir lugar.</h1>
+<ion-content>
+  <div id="map" style="width:100%; height:100%;"></div>
+  <ion-fab right top>
+    <button ion-fab (tap)="nuevoSitio()">
+      <ion-icon name="pin"></ion-icon>
+      <ion-icon name="add"></ion-icon>
+    </button>
+  </ion-fab>
 </ion-content>

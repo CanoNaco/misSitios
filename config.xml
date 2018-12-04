@@ -85,4 +85,10 @@
     <plugin name="cordova-plugin-geolocation" spec="4.0.1">
         <variable name="GEOLOCATION_USAGE_DESCRIPTION" value="La app necesita geolocalización" />
     </plugin>
+    <plugin name="cordova-plugin-camera" spec="4.0.3" />
+    <plugin name="cordova-sqlite-storage" spec="2.5.0" />
+    <plugin name="uk.co.workingedge.phonegap.plugin.launchnavigator" spec="4.2.2">
+        <variable name="OKHTTP_VERSION" value="3.+" />
+    </plugin>
+    <engine name="android" spec="7.1.1" />
 </widget>

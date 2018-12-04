@@ -1,10 +1,12 @@
 import { Component, ViewChild, ElementRef } from '@angular/core';
 import leaflet from 'leaflet';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController, ModalController, NavParams } from 'ionic-angular';
 
 // Importación del plugin de geolocalizacion
 import { Geolocation } from '@ionic-native/geolocation';
 import { Platform } from 'ionic-angular';
+
+
 
 /**
  * Generated class for the InicioPage page.
@@ -21,15 +23,25 @@ import { Platform } from 'ionic-angular';
 export class InicioPage {
   @ViewChild('map') mapContainer: ElementRef;
   map: any;
-  constructor(public navCtrl: NavController) {
+  coords: any;
+  
+  constructor(public navCtrl: NavController, public modalCtrl: ModalController) {
  
   }
  
-  ionViewDidEnter() {
+  ionViewDidLoad() {
     this.loadmap();
+  }
+
+  ionViewDidEnter() {
   }
  
   loadmap() {
+    var marcador = leaflet.icon({
+      iconUrl: 'assets/imgs/marcador.png',
+      iconAnchor: [14.5,50]
+    });
+
     this.map = leaflet.map("map").fitWorld();
     leaflet.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attributions: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
@@ -39,8 +51,9 @@ export class InicioPage {
       setView: true,
       maxZoom: 10
     }).on('locationfound', (e) => {
+      this.coords = e;
       let markerGroup = leaflet.featureGroup();
-      let marker: any = leaflet.marker([e.latitude, e.longitude]).on('click', () => {
+      let marker: any = leaflet.marker([e.latitude, e.longitude], {icon: marcador}).on('click', () => {
         alert('Marker clicked');
       })
       markerGroup.addLayer(marker);
@@ -48,7 +61,10 @@ export class InicioPage {
       }).on('locationerror', (err) => {
         alert(err.message);
     })
- 
   }
- 
+  nuevoSitio(){
+    //ventana modal del sitio
+    let mimodal = this.modalCtrl.create ('ModalNuevoSitioPage',this.coords);
+    mimodal.present();
+  }
 }
