@@ -49,4 +49,35 @@ export class ModalDetalleSitioPage {
     );
   }
 
+  editar(){
+    this.edit = true;
+  }
+
+  sacarFoto(){
+
+    let cameraOptions : CameraOptions = {
+        quality: 50,
+        encodingType: this.camera.EncodingType.JPEG,
+        targetWidth: 800,
+        targetHeight: 600,
+        destinationType: this.camera.DestinationType.DATA_URL,
+        sourceType: this.camera.PictureSourceType.CAMERA,
+        correctOrientation: true
+    }
+
+
+    this.camera.getPicture(cameraOptions).then((imageData) => {
+      // imageData is a base64 encoded string
+        this.sitio.foto = "data:image/jpeg;base64," + imageData;
+    }, (err) => {
+        console.log(err);
+    });
+  }
+
+  guardarCambios(){
+    this.db.modificaSitio(this.sitio).then((res)=>{
+        this.edit = false;
+    },(err)=>{  /* alert('error al meter en la bd'+err) */ })
+  }
+
 }
