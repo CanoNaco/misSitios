@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, ViewController, NavParams } from 'ionic-angular';
 import { Camera, CameraOptions } from '@ionic-native/camera';
-import { DbProvider } from '../../providers/db/db';
+//import { DbProvider } from '../../providers/db/db';
+import { FirebaseDbProvider } from '../../providers/firebase-db/firebase-db';
 /**
  * Generated class for the ModalNuevoSitioPage page.
  *
@@ -25,7 +26,8 @@ export class ModalNuevoSitioPage {
     private viewCtrl: ViewController, 
     public navParams: NavParams, 
     private camera: Camera,
-    private db: DbProvider) {
+    //private db: DbProvider
+    private dbFirebase: FirebaseDbProvider) {
   }
 
   ionViewDidLoad() {
@@ -66,9 +68,13 @@ export class ModalNuevoSitioPage {
       description: this.info,
       foto: this.foto
     }
-    this.db.addSitio(sitio).then((res)=>{
+    
+    this.dbFirebase.guardaSitio(sitio).then(res=>{
+      console.log('Sitio guardado en firebase:');
       this.cerrarModal();
-     /*  alert('se ha introducido correctamente en la bd'); */
-    },(err)=>{ /* alert('error al meter en la bd'+err) */ })
-}
+    })
+  }
+
+  
+
 }

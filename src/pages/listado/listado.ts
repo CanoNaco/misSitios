@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, ModalController } from 'ionic-angular';
 import { DbProvider } from '../../providers/db/db';
 import { AlertController } from 'ionic-angular';
+import { FirebaseDbProvider } from '../../providers/firebase-db/firebase-db';
 
 /**
  * Generated class for the ListadoPage page.
@@ -23,7 +24,8 @@ export class ListadoPage {
     public navParams: NavParams, 
     public modalCtrl: ModalController,
     public db : DbProvider,
-    public alertCtrl : AlertController) {
+    public alertCtrl : AlertController,
+    public dbFirebase: FirebaseDbProvider) {
   }
 
   ionViewDidLoad() {
@@ -31,20 +33,9 @@ export class ListadoPage {
   }
 
   ionViewDidEnter(){
-    this.db.getSitios().then((res)=>{
-    this.sitios = [];
-    for(var i = 0; i < res.rows.length; i++){
-      this.sitios.push({
-        id: res.rows.item(i).id,
-        lat: res.rows.item(i).lat,
-        lng: res.rows.item(i).lng,
-        address: res.rows.item(i).address,
-        description: res.rows.item(i).description,
-        foto: res.rows.item(i).foto
-      });
-    }
-
-   },(err)=>{ /* alert('error al sacar de la bd'+err) */ })
+    this.dbFirebase.getSitios().subscribe(sitios=>{
+      this.sitios = sitios;
+    })
   }
 
   muestraSitio(sitio){
@@ -53,6 +44,7 @@ export class ListadoPage {
   }
 
   borrarSitio(id){
+
     let alert = this.alertCtrl.create({
       title: 'Confirmar borrado',
       message: '¿Estás seguro de que deseas eliminar este sitio?',
@@ -67,26 +59,13 @@ export class ListadoPage {
         {
           text: 'Si',
           handler: () => {
-            this.db.borrarSitio(id).then((res)=>{
-              // Una vez borrado el sitio recargamos el listado
-              this.db.getSitios().then((res)=>{
-                this.sitios = [];
-                for(var i = 0; i < res.rows.length; i++){
-                  this.sitios.push({
-                    id : res.rows.item(i).id,
-                    lat: res.rows.item(i).lat,
-                    lng: res.rows.item(i).lng,
-                    address: res.rows.item(i).address,
-                    description: res.rows.item(i).description,
-                    foto: res.rows.item(i).foto
-                  });
-                }
-              },(err)=>{ /* alert('error al sacar de la bd'+err) */ })
-            },(err)=>{ /* alert('error al borrar de la bd'+err) */ });
-          }
+               // AquÍ borramos el sitio en firebase
+              this.dbFirebase.borrarSitio(id);
+           }
         }
       ]
     });
+
     alert.present();
-  }
+ }
 }
